@@ -5,5 +5,5 @@ urlpatterns = [
     path("reddit/", get_reddit_posts, name="get_reddit_posts"),
     path("reddit/stored/", get_stored_reddit_posts, name="get_stored_reddit_posts"),
     path('market-data/', market_data_view, name='market-data'),
-    path('token-price', get_on_chain_info, name='token-price'),
+    path('token-price/', get_on_chain_info, name='token-price'),
 ]
