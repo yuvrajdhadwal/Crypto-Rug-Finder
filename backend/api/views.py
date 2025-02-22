@@ -21,19 +21,23 @@ reddit = praw.Reddit(
     user_agent= os.getenv('REDDIT_APP')   
 )
 
+
 @api_view(['GET'])
 def on_chain_info(request):
     """
     Example usage:
-      GET /api/token-price/?token=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&chain=eth
-    """
-    token_address = request.GET.get("token", "")
-    chain = request.GET.get("chain", "eth")
+      GET /api/on_chain_info/?token=SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt&chain=mainnet
 
-    if not token_address:
-        return Response({"error": "Missing 'token' parameter"}, status=400)
-    
-    data = get_on_chain_info(token_address, chain)
+    'token' -> the Solana token address
+    'chain' -> 'mainnet' or 'devnet'
+    """
+    # 1) Look for "token" in the query params, not the actual address key.
+    network = request.GET.get("network", "mainnet")  # default to 'mainnet'
+    token_address = request.GET.get("address", "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt")
+
+
+    # 2) Pass (network, token_address) in that order to your function
+    data = get_on_chain_info(network, token_address)
     return Response(data)
 
 
