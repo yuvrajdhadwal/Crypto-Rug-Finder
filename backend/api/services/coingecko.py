@@ -8,7 +8,7 @@ def fetch_market_data(token_ids, vs_currency="usd"):
     :param vs_currency: The target currency (default: "usd")
     :return: List of market data dictionaries
     """
-    base_url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin&x_cg_demo_api_key=CG-r1Akq6ySZ7h9Zc8htGcpQCxy"
+    base_url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin&x_cg_demo_api_key=?"
     params = {
         "vs_currency": vs_currency,
         "ids": ",".join(token_ids),
