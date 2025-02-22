@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .services.coingecko import fetch_market_data  # Your existing fetch function
 
+from .models import RedditComment, RedditPost
+
 load_dotenv()
 
 reddit = praw.Reddit(
@@ -43,6 +45,7 @@ def get_reddit_posts(request):
 
     query = request.GET.get("query", None)
     limit = int(request.GET.get("limit", 10)) # I defaulted it to 10 for now
+    max_comments = int(request.GET.get("max_comments", 10))
 
     if not query:
         return Response({"error": "Crypto token required to query"}, status=status.HTTP_400_BAD_REQUEST)
@@ -55,22 +58,82 @@ def get_reddit_posts(request):
         'binance'
     ]
 
+    reddit_query = f"${query.lower()} OR {query.lower()} token OR {query.lower()} coin"
+
     results = []
 
     try:
         for subreddit_name in subreddit_list:
             subreddit = reddit.subreddit(subreddit_name)
             
-            for post in subreddit.search(query=query, limit=limit):
+            for post in subreddit.search(query=reddit_query, limit=limit):
+
+                post_author = post.author.name if post.author else "Unknown"
+
+                # Create post object
+                reddit_post, created = RedditPost.objects.get_or_create(
+                    url=post.url,
+                    defaults={
+                        "subreddit": subreddit_name,
+                        "crypto_token": query,
+                        "title": post.title,
+                        "text": post.selftext,
+                        "upvotes": post.score,
+                        "comments_count": post.num_comments,
+                        "url": post.url,
+                        "post_author": post_author,
+                    }
+                )
+
+                # Fetch and store comments
+                if created:
+                    post.comments.replace_more(limit=0)  # Remove "More Comments" button
+                    for comment in post.comments[:max_comments]:
+                        RedditComment.objects.create(
+                            post=reddit_post,
+                            author=comment.author.name if comment.author else "Unknown",
+                            text=comment.body,
+                            upvotes=comment.score
+                        )
+
+                # Append to response
                 results.append({
                     "subreddit": subreddit_name,
+                    "crypto_token": query,
                     "title": post.title,
                     "text": post.selftext,
+                    "post_author": post_author,
                     "upvotes": post.score,
-                    "comment_count": post.num_comments,
-                    "comments": post.comments
+                    "comments_count": post.num_comments,
+                    "url": post.url,
+                    "comments": [{"author": c.author, "text": c.text, "upvotes": c.upvotes}
+                                 for c in reddit_post.comments.all()[:max_comments]]
                 })
+
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    return Response({"posts": results[3]}, status=status.HTTP_200_OK)
+    return Response({"posts": results[:3]}, status=status.HTTP_200_OK) # returns the top 3 posts
+
+@api_view(["GET"])
+def get_stored_reddit_posts(request):
+    """
+    Retrieve stored Reddit posts filtered by token (query).
+    Example request: /api/reddit/stored/?query=Bitcoin
+    """
+    token = request.GET.get("query", None)
+
+    if not token:
+        return Response({"error": "Query parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    posts = RedditPost.objects.filter(crypto_token=token).order_by("-created_at")
+
+    if not posts.exists():
+        return Response({"error": "No data found for this query."}, status=status.HTTP_404_NOT_FOUND)
+
+    results = list(posts.values(
+    "crypto_token", "subreddit", "title", "text", "post_author",
+    "upvotes", "comments_count", "url"
+    ))
+
+    return Response({"posts": results}, status=status.HTTP_200_OK)

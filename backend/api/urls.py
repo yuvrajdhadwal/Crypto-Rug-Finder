@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import hello_world
+from .views import get_reddit_posts, get_stored_reddit_posts
 
 urlpatterns = [
-    path('hello/', hello_world),
+    path("reddit/", get_reddit_posts, name="get_reddit_posts"),
+    path("reddit/stored/", get_stored_reddit_posts, name="get_stored_reddit_posts"),
+
 ]
