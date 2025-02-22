@@ -1,26 +1,20 @@
 import requests
-from moralis import sol_api
+import os
 
-api_key = ""
+api_key=os.getenv('MORALIS_API')
 
 params = {
   "network": "mainnet",
   "address": "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt"
 }
 
-result = sol_api.token.get_token_price(
-  api_key=api_key,
-  params=params,
-)
-
 
 def get_on_chain_info(chain, address):
-
-    url = "https://deep-index.moralis.io/api/v2.2/tokens/search?query=pepe&chains=eth"
+    url = "https://solana-gateway.moralis.io/token/mainnet/SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt/pairs"
 
     headers = {
     "Accept": "application/json",
-    "X-API-Key": ""
+    "X-API-Key": api_key
     }
 
     response = requests.request("GET", url, headers=headers)
