@@ -54,9 +54,7 @@ def get_reddit_posts(request):
     subreddit_list = [
         'cryptocurrency',
         'cryptomoonshots',
-        'defi',
         'cryptoscams',
-        'binance'
     ]
 
     reddit_query = f"${query.lower()} OR {query.lower()} token OR {query.lower()} coin"
