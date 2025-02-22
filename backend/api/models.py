@@ -36,3 +36,12 @@ class RedditComment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.author} on {self.post.title}"
+    
+
+class CryptoTokenSentiment(models.Model):
+    crypto_token = models.CharField(max_length=100)
+    overall_title_sentiment = models.FloatField()
+    overall_text_sentiment = models.FloatField()
+    overall_comment_sentiment = models.FloatField()
+    overall_sentiment = models.FloatField()
+    last_updated = models.DateTimeField(auto_now=True)
