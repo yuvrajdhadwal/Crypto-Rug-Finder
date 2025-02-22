@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .services.coingecko import fetch_market_data  # Your existing fetch function
 from .services.honeypot import check_honeypot
-
+from .services.moralis import get_on_chain_info
 from .models import RedditComment, RedditPost
 
 load_dotenv()
@@ -20,6 +20,21 @@ reddit = praw.Reddit(
     password= os.getenv('REDDIT_PASSWORD'),
     user_agent= os.getenv('REDDIT_APP')   
 )
+
+@api_view(['GET'])
+def on_chain_info(request):
+    """
+    Example usage:
+      GET /api/token-price/?token=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&chain=eth
+    """
+    token_address = request.GET.get("token", "")
+    chain = request.GET.get("chain", "eth")
+
+    if not token_address:
+        return Response({"error": "Missing 'token' parameter"}, status=400)
+    
+    data = get_on_chain_info(token_address, chain)
+    return Response(data)
 
 
 @api_view(['GET'])
