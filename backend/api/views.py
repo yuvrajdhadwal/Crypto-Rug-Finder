@@ -109,8 +109,8 @@ def get_reddit_posts(request):
     API endpoint to fetch Reddit posts with concurrent subreddit fetching.
     """
     query = request.GET.get("query", None)
-    limit = int(request.GET.get("limit", 10))
-    max_comments = int(request.GET.get("max_comments", 10))
+    limit = int(request.GET.get("limit", 15))
+    max_comments = int(request.GET.get("max_comments", 5))
 
     if not query:
         return Response({"error": "Crypto token required to query"}, status=status.HTTP_400_BAD_REQUEST)
@@ -131,11 +131,11 @@ def get_reddit_posts(request):
 
         for future in concurrent.futures.as_completed(futures):
             try:
-                results.extend(future.result())  # Get the processed data
+                results.extend(future.result()) 
             except Exception as e:
                 print(f"Error fetching subreddit {futures[future]}: {e}")
 
-    return Response({"posts": results[:3]}, status=status.HTTP_200_OK)  # ✅ Return top 3 posts
+    return Response({"posts": results[:3]}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def get_stored_reddit_posts(request):
@@ -174,19 +174,24 @@ def honeypot_view(request):
     data = check_honeypot(token, chain)
     return Response(data)
 
-@api_view(['GET'])
-def create_sentiment(request):
-    '''Retrieve sentiment of a certain crypto token'''
 
-    token = request.GET.get("query", None)
-
-    if not token:
-        return Response({'Error': "Query Parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+def create_sentiment(token):
+    '''creates sentiment of a certain crypto token'''
     
     posts = RedditPost.objects.filter(crypto_token=token).order_by("-created_at")
 
-    if not posts.exists():
-        return Response({'Error': "No Data Found at this Token"}, status=status.HTTP_404_NOT_FOUND)
+    if not posts.exists():        
+        request = type('Request', (object,), {"GET": {"query": token, "limit": 15, "max_comments": 5}})
+        response = get_reddit_posts(request)
+        
+        if response.status_code != 200 or not response.data.get("posts"):
+            return None  # No posts found even after fetching
+
+        # Re-fetch posts after updating
+        posts = RedditPost.objects.filter(crypto_token=token).order_by("-created_at")
+
+        if not posts.exists():
+            return None  # Still no data, return failure
     
     analyzer = SentimentIntensityAnalyzer()
 
@@ -213,7 +218,7 @@ def create_sentiment(request):
 
     overall_sentiment = (overall_title_sentiment * 0.3) + (overall_text_sentiment * 0.4) + (overall_comment_sentiment * 0.3)
 
-    sentiment = CryptoTokenSentiment.objects.get_or_create(
+    sentiment, created = CryptoTokenSentiment.objects.get_or_create(
             crypto_token=token,
             defaults={
                 "crypto_token": token,
@@ -225,3 +230,24 @@ def create_sentiment(request):
         )
     
     return Response(status=status.HTTP_200_OK)
+
+def get_sentiment(request):
+    token = request.GET.get("query", None)
+
+    if not token:
+        return Response({'Error': "Query Parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        sentiment =  CryptoTokenSentiment.objects.get(token_address=token)
+    except CryptoTokenSentiment.DoesNotExist:
+        sentiment = create_sentiment(token)
+        if not sentiment:
+            return Response({'Error': "No sentiment data available."}, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response({
+        "crypto_token": sentiment.crypto_token,
+        "overall_title_sentiment": sentiment.overall_title_sentiment,
+        "overall_text_sentiment": sentiment.overall_text_sentiment,
+        "overall_comment_sentiment": sentiment.overall_comment_sentiment,
+        "overall_sentiment": sentiment.overall_sentiment
+    }, status=status.HTTP_200_OK)
