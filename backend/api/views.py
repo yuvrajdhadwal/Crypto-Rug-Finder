@@ -6,10 +6,11 @@ import concurrent.futures
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from .services.coingecko import fetch_market_data  # Your existing fetch function
 from .services.honeypot import check_honeypot
 from .services.moralis import get_on_chain_info
-from .models import RedditComment, RedditPost
+from .models import RedditComment, RedditPost, CryptoTokenSentiment
 
 load_dotenv()
 
@@ -172,3 +173,55 @@ def honeypot_view(request):
     
     data = check_honeypot(token, chain)
     return Response(data)
+
+@api_view(['GET'])
+def create_sentiment(request):
+    '''Retrieve sentiment of a certain crypto token'''
+
+    token = request.GET.get("query", None)
+
+    if not token:
+        return Response({'Error': "Query Parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    posts = RedditPost.objects.filter(crypto_token=token).order_by("-created_at")
+
+    if not posts.exists():
+        return Response({'Error': "No Data Found at this Token"}, status=status.HTTP_404_NOT_FOUND)
+    
+    analyzer = SentimentIntensityAnalyzer()
+
+    title_sentiments = []
+    text_sentiments = []
+    comment_sentiments = []
+
+    for post in posts:
+        post_comments = RedditComment.objects.filter(post=post)
+
+        title_sentiment = analyzer.polarity_scores(post.title)["compound"]
+        text_sentiment = analyzer.polarity_scores(post.text)['compound']
+
+        comment_sentiment_list = [analyzer.polarity_scores(comment.text)['compound'] for comment in post_comments]
+        avg_comment_sentiment = sum(comment_sentiment_list) / len(comment_sentiment_list) if comment_sentiment_list else 0
+
+        title_sentiments.append(title_sentiment)
+        text_sentiments.append(text_sentiment)
+        comment_sentiments.append(avg_comment_sentiment)
+
+    overall_title_sentiment = sum(title_sentiments) / len(title_sentiments) if title_sentiments else 0
+    overall_text_sentiment = sum(text_sentiments) / len(text_sentiments) if text_sentiments else 0
+    overall_comment_sentiment = sum(comment_sentiments) / len(comment_sentiments) if comment_sentiments else 0
+
+    overall_sentiment = (overall_title_sentiment * 0.3) + (overall_text_sentiment * 0.4) + (overall_comment_sentiment * 0.3)
+
+    sentiment = CryptoTokenSentiment.objects.get_or_create(
+            crypto_token=token,
+            defaults={
+                "crypto_token": token,
+                "overall_title_sentiment": overall_title_sentiment,
+                "overall_text_sentiment": overall_text_sentiment,
+                "overall_comment_sentiment": overall_comment_sentiment,
+                "overall_sentiment": overall_sentiment,
+            }
+        )
+    
+    return Response(status=status.HTTP_200_OK)
