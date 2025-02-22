@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .services.coingecko import fetch_market_data  # Your existing fetch function
+from .services.honeypot import check_honeypot
 
 from .models import RedditComment, RedditPost
 
@@ -137,3 +138,17 @@ def get_stored_reddit_posts(request):
     ))
 
     return Response({"posts": results}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def honeypot_view(request):
+    """
+    Example: GET /api/honeypot/?token=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48&chain=eth
+    """
+    token = request.GET.get("token", "")
+    chain = request.GET.get("chain", "eth")
+    
+    if not token:
+        return Response({"error": "Missing 'token' parameter"}, status=400)
+    
+    data = check_honeypot(token, chain)
+    return Response(data)
