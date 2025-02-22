@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-*xabrcbwze3g$p@60t_^1(nhh!-^h=z$pvk7^u*ki_za5d3l4n
 DEBUG = True
 
 ALLOWED_HOSTS = ['crypto-rug-finder.herokuapp.com', 
-                 'api.cryptorugfinder.tech']
+                 'api.cryptorugfinder.tech',
+                 '127.0.0.1']
 
 
 # Application definition
