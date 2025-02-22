@@ -1,7 +1,23 @@
 # backend/api/views.py
+import os
+import praw
+from dotenv import load_dotenv
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from .services.coingecko import fetch_market_data  # Your existing fetch function
+
+load_dotenv()
+
+reddit = praw.Reddit(
+    client_id= os.getenv('CLIENT_ID'),
+    client_secret= os.getenv('CLIENT_SECRET'),
+    username= os.getenv('REDDIT_USERNAME'),
+    password= os.getenv('REDDIT_PASSWORD'),
+    user_agent= os.getenv('REDDIT_APP')   
+)
+
 
 @api_view(['GET'])
 def market_data_view(request):
@@ -17,3 +33,44 @@ def market_data_view(request):
     data = fetch_market_data(tokens_list)
 
     return Response(data)
+
+@api_view(['GET'])
+def get_reddit_posts(request):
+    """
+    API endpoint to fetch Reddit posts based on a query.
+    Example request: /api/reddit/?query=Bitcoin&limit=5
+    """
+
+    query = request.GET.get("query", None)
+    limit = int(request.GET.get("limit", 10)) # I defaulted it to 10 for now
+
+    if not query:
+        return Response({"error": "Crypto token required to query"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    subreddit_list = [
+        'cryptocurrency',
+        'cryptomoonshots',
+        'defi',
+        'cryptoscams',
+        'binance'
+    ]
+
+    results = []
+
+    try:
+        for subreddit_name in subreddit_list:
+            subreddit = reddit.subreddit(subreddit_name)
+            
+            for post in subreddit.search(query=query, limit=limit):
+                results.append({
+                    "subreddit": subreddit_name,
+                    "title": post.title,
+                    "text": post.selftext,
+                    "upvotes": post.score,
+                    "comment_count": post.num_comments,
+                    "comments": post.comments
+                })
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    return Response({"posts": results[3]}, status=status.HTTP_200_OK)
