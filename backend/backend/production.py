@@ -6,6 +6,7 @@ import os
 # that Azure automatically creates for us.
 ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
 CSRF_TRUSTED_ORIGINS = ['https://'+os.environ['WEBSITE_HOSTNAME']]
+SECRET_KEY = os.environ['MY_SECRET_KEY']
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -40,9 +41,11 @@ CONNECTION_STR = {pair.split('=')[0]:pair.split('=')[1] for pair in CONNECTION.s
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mydatabase",
-        "HOST": "127.0.0.1",
-        "USER": "mydatabaseuser",
-        "PASSWORD": "mypassword",
+        "NAME": CONNECTION_STR['dbname'],
+        "HOST": CONNECTION_STR['host'],
+        "USER": CONNECTION_STR['user'],
+        "PASSWORD": CONNECTION_STR['password'],
     }
 }
+
+STATIC_ROOT = BASE_DIR/'staticfiles'
