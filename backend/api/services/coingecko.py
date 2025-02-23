@@ -1,35 +1,69 @@
 import requests
 import os
 
-def fetch_market_data(token_ids, vs_currency="usd"):
-    """
-    Fetch market data for the given tokens from CoinGecko.
+# CoinGecko API Base URL
+COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3"
+
+# Function to fetch all tokens and their details from CoinGecko
+def fetch_all_tokens():
+    url = f"{COINGECKO_BASE_URL}/coins/list"
+    headers = {"accept": "application/json"}
+    response = requests.get(url, headers=headers)
     
-    :param token_ids: List of CoinGecko token IDs (e.g., ["ethereum", "uniswap", "bitcoin"])
-    :param vs_currency: The target currency (default: "usd")
-    :return: List of market data dictionaries
-    """
-    base_url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin&x_cg_demo_api_key=" + os.getenv('COINGECKO_API')
-    params = {
-        "vs_currency": vs_currency,
-        "ids": ",".join(token_ids),
-        "order": "market_cap_desc",
-        "per_page": len(token_ids),
-        "page": 1,
-        "sparkline": "false"
-    }
-    response = requests.get(base_url, params=params)
     if response.status_code == 200:
-        return response.json()
+        return response.json()  # List of all tokens
     else:
-        print("Error fetching data:", response.status_code, response.text)
+        print(f"Error fetching token list: {response.status_code}")
         return []
 
-if __name__ == "__main__":
-    tokens = ["ethereum", "uniswap", "bitcoin"]
-    market_data = fetch_market_data(tokens)
-    for token in market_data:
-        print(f"{token['name']} ({token['id']}):")
-        print(f"  Current Price: ${token['current_price']}")
-        print(f"  Total Volume: ${token['total_volume']}")
-        print(f"  Market Cap: ${token['market_cap']}\n")
+# Function to find contract address given a token symbol (e.g., "TRUMP")
+def get_contract_address(token_symbol):
+    tokens = fetch_all_tokens()
+    
+    for token in tokens:
+        if token["symbol"].lower() == token_symbol.lower():
+            return token["id"]  # Return CoinGecko's ID for this token
+    
+    return None  # If token is not found
+
+# Function to fetch market data for a given token ID
+def fetch_market_data(token_id, vs_currency="usd"):
+    url = f"{COINGECKO_BASE_URL}/coins/markets"
+    params = {
+        "vs_currency": vs_currency,
+        "ids": token_id,
+        "order": "market_cap_desc",
+        "per_page": 1,
+        "page": 1,
+        "sparkline": "false",
+    }
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code == 200:
+        return response.json()[0]  # Return first result
+    else:
+        print(f"Error fetching market data: {response.status_code}")
+        return None
+
+# Function to get token details (Contract Address + Market Data)
+def get_token_info(symbol):
+    token_id = get_contract_address(symbol)
+    
+    if not token_id:
+        return {"error": f"Token symbol '{symbol}' not found on CoinGecko."}
+    
+    market_data = fetch_market_data(token_id)
+    
+    if not market_data:
+        return {"error": f"Market data for '{symbol}' could not be retrieved."}
+    
+    return {
+        "name": market_data["name"],
+        "symbol": symbol.upper(),
+        "contract_address": token_id,  # CoinGecko ID acts as a reference
+        "current_price": market_data["current_price"],
+        "total_volume": market_data["total_volume"],
+        "market_cap": market_data["market_cap"],
+    }
+
