@@ -4,6 +4,7 @@ import '../styles/BotCheck.css';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement, Title } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import config from '../config';
 
 Chart.register(ArcElement, ChartDataLabels, Title);
 
@@ -33,7 +34,7 @@ const BotCheck = ({ cryptoName }) => {
 
   useEffect(() => {
     if (cryptoName) {
-      axios.get(`http://localhost:8000/api/bot_check/?query=${cryptoName}`)
+      axios.get(`${config.baseURL}/api/bot_check/?query=${cryptoName}`)
         .then(res => {
             const post_spam = res.data['Post Spam'];
             const comment_spam = res.data['Comment Spam'];

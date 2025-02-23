@@ -22,10 +22,12 @@ h2 {
 
 .sentiment {
   border: 1px solid #ccc; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: #ffd6d6;
+  width: 100%;
 }
 
 .sentiment-title {
