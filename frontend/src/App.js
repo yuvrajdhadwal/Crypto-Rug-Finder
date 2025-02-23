@@ -51,7 +51,7 @@ class App extends React.Component {
                   <Sentiments cryptoName={cryptoName} />
                   <BotCheck cryptoName={cryptoName} />
                 </span>
-                <CryptoInfo cryptoToken={'0x576e2bed8f7b46d34016198911cdf9886f78bea7'} />
+                <CryptoInfo cryptoToken={'0x3593D125a4f7849a1B059E64F4517A86Dd60c95d'} />
               </span>
             )}
           </div>
