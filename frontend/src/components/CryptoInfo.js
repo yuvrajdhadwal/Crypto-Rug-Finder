@@ -15,6 +15,10 @@ const CryptoInfo = ({ cryptoToken }) => {
         }).format(value);
     };
 
+    const formatNum = (value) => {
+        return new Intl.NumberFormat('en-US').format(value);
+    }
+
   useEffect(() => {
     if (cryptoToken) {
 
@@ -53,7 +57,7 @@ return (
                 </div>
                 <div className="CryptoInfo-box">
                     <p>Liquidity</p>
-                    <h3>{formatUSD(liquidity)}</h3>
+                    <h3>{formatNum(liquidity)}</h3>
                 </div>
                 <div className="CryptoInfo-box">
                     <p>Market Cap</p>
@@ -61,7 +65,7 @@ return (
                 </div>
             </>
         ) : (
-            <p>Loading...</p>
+            <p></p>
         )}
     </div>
 );

@@ -75,7 +75,7 @@ const BotCheck = ({ cryptoName }) => {
           const percentage = ((value / total) * 100).toFixed(1) + '%';
           return `${label}:\n${percentage}`;
         },
-        color: '#fff',
+        color: '#000',
       },
       title: {
         display: false, // Disable the default title plugin
@@ -114,7 +114,7 @@ const BotCheck = ({ cryptoName }) => {
                 </div>
             </ul>
         ) : (
-            <p>Loading...</p>
+            <p></p>
         )}
     </div>
   );
