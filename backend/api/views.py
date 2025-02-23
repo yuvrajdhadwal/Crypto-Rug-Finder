@@ -11,7 +11,7 @@ from .services.coingecko import fetch_market_data  # Your existing fetch functio
 from .services.honeypot import check_honeypot
 from .services.moralis import get_on_chain_info
 from .services.reddit import fetch_subreddit_posts
-# from .services.sentiment import create_sentiment
+from .services.sentiment import sentiment_desc
 from .services.bot_detection import compute_bot_activity
 from .models import RedditComment, RedditPost, CryptoTokenSentiment, CryptoTokenSpam
 
@@ -159,10 +159,14 @@ def get_sentiment(request):
     
     return Response({
         "crypto_token": sentiment.crypto_token,
+        "overall_title_sentiment_value": sentiment.overall_title_sentiment_value,
+        "overall_text_sentiment_value": sentiment.overall_text_sentiment_value,
+        "overall_comment_sentiment_value": sentiment.overall_comment_sentiment_value,
+        "overall_sentiment_value": sentiment.overall_sentiment_value,
         "overall_title_sentiment": sentiment.overall_title_sentiment,
         "overall_text_sentiment": sentiment.overall_text_sentiment,
         "overall_comment_sentiment": sentiment.overall_comment_sentiment,
-        "overall_sentiment": sentiment.overall_sentiment
+        "overall_sentiment": sentiment.overall_sentiment,
     }, status=status.HTTP_200_OK)
 
 def create_sentiment(token):
@@ -212,10 +216,14 @@ def create_sentiment(token):
             crypto_token=token,
             defaults={
                 "crypto_token": token,
-                "overall_title_sentiment": overall_title_sentiment,
-                "overall_text_sentiment": overall_text_sentiment,
-                "overall_comment_sentiment": overall_comment_sentiment,
-                "overall_sentiment": overall_sentiment,
+                "overall_title_sentiment_value": overall_title_sentiment,
+                "overall_text_sentiment_value": overall_text_sentiment,
+                "overall_comment_sentiment_value": overall_comment_sentiment,
+                "overall_sentiment_value": overall_sentiment,
+                "overall_title_sentiment": sentiment_desc(overall_title_sentiment),
+                "overall_text_sentiment": sentiment_desc(overall_text_sentiment),
+                "overall_comment_sentiment": sentiment_desc(overall_comment_sentiment),
+                "overall_sentiment": sentiment_desc(overall_sentiment),
             }
         )
     

@@ -40,10 +40,14 @@ class RedditComment(models.Model):
 
 class CryptoTokenSentiment(models.Model):
     crypto_token = models.CharField(max_length=100)
-    overall_title_sentiment = models.FloatField()
-    overall_text_sentiment = models.FloatField()
-    overall_comment_sentiment = models.FloatField()
-    overall_sentiment = models.FloatField()
+    overall_title_sentiment_value = models.FloatField()
+    overall_text_sentiment_value = models.FloatField()
+    overall_comment_sentiment_value = models.FloatField()
+    overall_sentiment_value = models.FloatField()
+    overall_title_sentiment = models.CharField(max_length=100)
+    overall_text_sentiment = models.CharField(max_length=100)
+    overall_comment_sentiment = models.CharField(max_length=100)
+    overall_sentiment = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
