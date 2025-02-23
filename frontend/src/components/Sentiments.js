@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Sentiments.css';
 
-const Sentiments = ({ cryptoToken, buttonNumber }) => {
+const Sentiments = ({ cryptoName }) => {
   const [sentiments, setSentiments] = useState({});
 
   useEffect(() => {
-    if (cryptoToken) {
-      axios.get(`http://localhost:8000/api/get_sentiment/?query=${cryptoToken}`)
+    if (cryptoName) {
+      axios.get(`http://localhost:8000/api/get_sentiment/?query=${cryptoName}`)
         .then(res => {
             setSentiments({
                 overall: res.data.overall_sentiment,
@@ -20,7 +20,7 @@ const Sentiments = ({ cryptoToken, buttonNumber }) => {
             console.log(err);
         });
     }
-  }, [cryptoToken, buttonNumber]);
+  }, [cryptoName]);
 
 return (
     <div className="sentiments-container-internal">

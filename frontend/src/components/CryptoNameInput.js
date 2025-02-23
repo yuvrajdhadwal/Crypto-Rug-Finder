@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import '../styles/CryptoTokenInput.css';
+import '../styles/CryptoNameInput.css';
 
-const CryptoTokenInput = () => {
+const CryptoNameInput = () => {
   const [highlightedButton, setHighlightedButton] = useState(null);
-  const [cryptoToken, setcryptoToken] = useState('');
+  const [cryptoName, setcryptoName] = useState('');
 
   const handleButtonClick = (buttonNumber) => {
     setHighlightedButton(buttonNumber);
 
     // Begin querying
-    const event = new CustomEvent('cryptoTokenSelected', { detail: { cryptoToken, buttonNumber } });
+    const event = new CustomEvent('cryptoNameSelected', { detail: { cryptoName, buttonNumber } });
     window.dispatchEvent(event);
   };
 
@@ -27,7 +27,7 @@ const CryptoTokenInput = () => {
           } else {
             e.target.value = e.target.value.toUpperCase();
           }
-          setcryptoToken(e.target.value.slice(1));
+          setcryptoName(e.target.value.slice(1));
           setHighlightedButton(null);
         }}
       />
@@ -50,4 +50,4 @@ const CryptoTokenInput = () => {
   );
 };
 
-export default CryptoTokenInput;
+export default CryptoNameInput;
