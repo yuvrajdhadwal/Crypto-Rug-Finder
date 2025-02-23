@@ -1,0 +1,85 @@
+.crypto-token-input {
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.dollar-sign {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2em;
+    font-weight: bolder;
+    color: #ccc;
+    pointer-events: none; /* Prevents the dollar sign from being interacted with */
+}
+
+.crypto-token-input input {
+    width: 100%;
+    padding: 10px 10px 10px 30px; /* Add padding to the left to make space for the dollar sign */
+    border: none;
+    font-size: 2em;
+    font-weight: bolder;
+    outline: none;
+    text-align: center;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.crypto-token-input input::placeholder {
+    color: #ccc;
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Add some space between the buttons */
+    width: 100%;
+}
+
+.crypto-token-input button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    width: 160px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    outline: none;
+}
+
+.crypto-token-input button:hover {
+    background-color: rgb(79, 157, 240);
+}
+
+.crypto-token-input button.highlighted {
+    background-color: #0056b3;
+    border: 2px solid gold;
+    animation: borderAnimation 1s infinite alternate;
+}
+
+@keyframes borderAnimation {
+    0% {
+        border-color: gold;
+    }
+    100% {
+        border-color: white;
+    }
+}

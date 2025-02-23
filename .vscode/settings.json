@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/5d17e5d5-a58d-4ada-954e-908c7ed11e08/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/cryptorug",
+    "appService.deploySubpath": "."
+}
