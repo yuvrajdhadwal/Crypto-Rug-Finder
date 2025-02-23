@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/RedditPosts.css';
+import config from '../config';
 
 const RedditPosts = ({ cryptoName }) => {
   const [posts, setPosts] = useState([]);
@@ -8,7 +9,7 @@ const RedditPosts = ({ cryptoName }) => {
   useEffect(() => {
       if (cryptoName) {
       setPosts([]);
-      axios.get(`http://localhost:8000/api/reddit/?query=${cryptoName}`)
+      axios.get(`${config.baseURL}/api/reddit/?query=${cryptoName}`)
         .then(res => {
           setPosts(res.data.posts);
             setTimeout(() => {

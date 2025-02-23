@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Sentiments.css';
+import config from '../config';
 
 const Sentiments = ({ cryptoName }) => {
   const [sentiments, setSentiments] = useState({});
 
   useEffect(() => {
     if (cryptoName) {
-      axios.get(`http://localhost:8000/api/get_sentiment/?query=${cryptoName}`)
+      axios.get(`${config.baseURL}/api/get_sentiment/?query=${cryptoName}`)
         .then(res => {
             setSentiments({
                 overall: res.data.overall_sentiment,
