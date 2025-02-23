@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()  # This must be called BEFORE os.getenv
-api_key = os.getenv("MORALIS_API")
+api_key = os.environ["MORALIS"]
 def get_on_chain_info(token_address: str):
     """
     Calls Moralis to get token pairs info on Solana.
