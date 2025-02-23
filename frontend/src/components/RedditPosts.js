@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../styles/RedditPosts.css';
 import config from '../config';
 
-const RedditPosts = ({ cryptoName }) => {
+const RedditPosts = ({ cryptoName, refreshKey }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const RedditPosts = ({ cryptoName }) => {
           console.log(err);
         });
     }
-  }, [cryptoName]);
+  }, [cryptoName, refreshKey]);
 
 return (
     <div className="reddit-posts-container-internal">

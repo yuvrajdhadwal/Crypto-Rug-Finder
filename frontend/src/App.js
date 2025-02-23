@@ -14,6 +14,7 @@ class App extends React.Component {
       cryptoName: null,
       buttonNumber: null,
       redditLoaded: false,
+      refreshKey: Date.now(),
     };
   }
 
@@ -31,21 +32,23 @@ class App extends React.Component {
     const { cryptoName, cryptoToken } = event.detail;
     this.setState({ cryptoName, cryptoToken });
     this.setState({ redditLoaded: false });
+    this.setState({ refreshKey: Date.now() });
   };
 
   handleRedditLoaded = () => {
     this.setState({ redditLoaded: true });
+    this.setState({ key: Date.now() });
   }
 
   render() {
-    const { cryptoName, cryptoToken, redditLoaded } = this.state;
+    const { cryptoName, cryptoToken, redditLoaded, refreshKey } = this.state;
     return (
       <div>
       <Header />
       <CryptoNameInput />
       {cryptoName ? (
         <div className="reddit-and-sentiments-container">
-        <RedditPosts cryptoName={cryptoName} />
+        <RedditPosts cryptoName={cryptoName} refreshKey={refreshKey} />
         {redditLoaded ? (
           <span>
           <Sentiments cryptoName={cryptoName} />
