@@ -66,4 +66,3 @@ def get_token_info(symbol):
         "total_volume": market_data["total_volume"],
         "market_cap": market_data["market_cap"],
     }
-
