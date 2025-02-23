@@ -1,0 +1,50 @@
+.sentiments-container-internal {
+  width: 15%;
+  display: inline-block;
+  vertical-align: top;
+  margin: 0% 5% 0% 5%;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: black;
+  text-align: center;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+.sentiments-list {
+  list-style-type: none;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.sentiment {
+  border: 1px solid #ccc; 
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #ffd6d6;
+}
+
+.sentiment-title {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: red;
+  text-decoration: none;
+}
+
+.sentiment-details {
+  font-size: 0.8em;
+  color: #777;
+  margin-top: 5px;
+  text-align: center;
+}
+
+p {
+  font-size: 1em;
+  color: #333;
+  text-align: center;
+}
