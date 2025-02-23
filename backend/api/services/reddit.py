@@ -47,4 +47,5 @@ def fetch_subreddit_posts(subreddit_name, reddit_query, limit, max_comments, que
             "created_utc": post.created_utc,
         })
 
-    return results
+    sorted_results = sorted(results, key=lambda x: x["upvotes"], reverse=True)
+    return sorted_results[:3]
