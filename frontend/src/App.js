@@ -17,18 +17,19 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('cryptoNameSelected', this.handlecryptoNameSelected);
+    window.addEventListener('cryptoNameSelected', this.handleCryptoNameSelected);
     window.addEventListener('redditLoaded', this.hanldeRedditLoaded);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('cryptoNameSelected', this.handlecryptoNameSelected);
+    window.removeEventListener('cryptoNameSelected', this.handleCryptoNameSelected);
     window.removeEventListener('redditLoaded', this.hanldeRedditLoaded);
   }
 
-  handlecryptoNameSelected = (event) => {
+  handleCryptoNameSelected = (event) => {
     const { cryptoName, buttonNumber } = event.detail;
     this.setState({ cryptoName, buttonNumber });
+    this.setState({ redditLoaded: false });
   };
 
   hanldeRedditLoaded = () => {
@@ -50,7 +51,7 @@ class App extends React.Component {
                   <Sentiments cryptoName={cryptoName} />
                   <BotCheck cryptoName={cryptoName} />
                 </span>
-                {/* <CryptoInfo cryptoToken={'0x576e2bed8f7b46d34016198911cdf9886f78bea7'} /> */}
+                <CryptoInfo cryptoToken={'0x576e2bed8f7b46d34016198911cdf9886f78bea7'} />
               </span>
             )}
           </div>

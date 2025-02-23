@@ -6,7 +6,8 @@ const RedditPosts = ({ cryptoName }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    if (cryptoName) {
+      if (cryptoName) {
+      setPosts([]);
       axios.get(`http://localhost:8000/api/reddit/?query=${cryptoName}`)
         .then(res => {
           setPosts(res.data.posts);
