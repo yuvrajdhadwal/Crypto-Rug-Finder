@@ -1,6 +1,7 @@
 # backend/api/views.py
 import os
 import praw
+import random
 from dotenv import load_dotenv
 import concurrent.futures
 from rest_framework.decorators import api_view
@@ -87,7 +88,7 @@ def get_reddit_posts(request):
     API endpoint to fetch Reddit posts with concurrent subreddit fetching.
     """
     query = request.GET.get("query", None)
-    limit = int(request.GET.get("limit", 15))
+    limit = int(request.GET.get("limit", 25))
     max_comments = int(request.GET.get("max_comments", 5))
 
     if not query:
@@ -114,7 +115,7 @@ def get_reddit_posts(request):
             except Exception as e:
                 print(f"Error fetching subreddit {futures[future]}: {e}")
 
-    return Response({"posts": results[:3]}, status=status.HTTP_200_OK)
+    return Response({"posts": random.sample(results, min(3, len(results)))}, status=status.HTTP_200_OK)
 
 @api_view(["GET"])
 def get_stored_reddit_posts(request):
