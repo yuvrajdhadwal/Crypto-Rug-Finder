@@ -1,10 +1,11 @@
 /* Header.css */
 
 .header {
-    background-color: #333;
+    background-color: #fff5be;
     color: white;
     padding: 20px;
     text-align: center;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .header h1 {
@@ -30,22 +31,23 @@
 
 @keyframes colorChange {
     0% {
-        background: linear-gradient(45deg, #ffffff, #d1fbff);
+        background: linear-gradient(45deg, #ff4500, #0000ff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     50% {
-        background: linear-gradient(45deg, #d1fbff, #ffffff);
+        background: linear-gradient(45deg, #0000ff, #ff4500);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     100% {
-        background: linear-gradient(45deg, #ffffff, #d1fbff);
+        background: linear-gradient(45deg, #ff4500, #0000ff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 }
 
 .header h1 {
+    font-weight: 1000;
     animation: textAnimation 3s, colorChange 1s infinite;
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../styles/CryptoNameInput.css';
 
 const CryptoNameInput = () => {
-  const [highlightedButton, setHighlightedButton] = useState(null);
+  // const [highlightedButton, setHighlightedButton] = useState(null);
   const [cryptoName, setcryptoName] = useState('');
   const [cryptoToken, setcryptoToken] = useState('');
 
@@ -34,7 +34,7 @@ const CryptoNameInput = () => {
             e.target.value = e.target.value.toUpperCase();
           }
           setcryptoName(e.target.value.slice(1));
-          setHighlightedButton(null);
+          // setHighlightedButton(null);
         }}
       />
       <input
@@ -50,7 +50,7 @@ const CryptoNameInput = () => {
         }}
         onInput={(e) => {
           setcryptoToken(e.target.value);
-          setHighlightedButton(null);
+          // setHighlightedButton(null);
         }}
       />
 

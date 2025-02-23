@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Notes.css';
+import config from '../config';
 
 const Notes = ({ cryptoToken }) => {
   const [honeypot, setHoneypot] = useState(false);
@@ -8,7 +9,7 @@ const Notes = ({ cryptoToken }) => {
 
   useEffect(() => {
     if (cryptoToken) {
-      axios.get(`http://localhost:8000/api/honeypot/?token=${cryptoToken}&chain=eth`)
+      axios.get(`${config.baseURL}/api/honeypot/?token=${cryptoToken}&chain=eth`)
         .then(res => {
             setHoneypot(res.data.honeypotResult.isHoneypot);
             setHasQueried(true);
@@ -26,7 +27,7 @@ return (
                 <h2>Notes</h2>
                 
                 {honeypot &&
-                <li className="note">
+                <li className="note bad">
                     <div>
                         <p className="note-title">
                             🍯 Honeypot Detected!
@@ -34,7 +35,7 @@ return (
                     </div>
                 </li>}
                 {!honeypot &&
-                <li className="note">
+                <li className="note good">
                     <div>
                         <p className="note-title">
                             🍯 Not a honeypot.

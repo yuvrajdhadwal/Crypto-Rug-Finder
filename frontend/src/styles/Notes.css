@@ -1,5 +1,5 @@
 .notes-container-internal {
-  width: 10%;
+  width: 12%;
   display: inline-block;
   vertical-align: top;
   margin: 0% 5% 0% 5%;
@@ -25,14 +25,24 @@ h2 {
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  background-color: green;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.good {
+  background-color: #abd1ab;
+  color: green;
+}
+
+.bad {
+  background-color: #ffd6d6;
+  color: red;
 }
 
 .note-title {
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
-  color: red;
   text-decoration: none;
 }
 
