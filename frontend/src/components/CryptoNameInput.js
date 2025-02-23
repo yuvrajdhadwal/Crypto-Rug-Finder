@@ -21,6 +21,11 @@ const CryptoNameInput = () => {
         name="crypto-token"
         placeholder="Enter a Crypto Token"
         maxLength="100"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleButtonClick(null);
+          }
+        }}
         onInput={(e) => {
           if (!e.target.value.startsWith('$')) {
             e.target.value = '$' + e.target.value.toUpperCase();

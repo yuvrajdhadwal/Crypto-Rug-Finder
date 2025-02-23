@@ -35,7 +35,6 @@ const BotCheck = ({ cryptoName }) => {
     if (cryptoName) {
       axios.get(`http://localhost:8000/api/bot_check/?query=${cryptoName}`)
         .then(res => {
-            console.log(res.data);
             const post_spam = res.data['Post Spam'];
             const comment_spam = res.data['Comment Spam'];
             setPostData({
