@@ -20,8 +20,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'https://delightful-rock-02e91df0f.4.azurestaticapps.net'
+]
 
 DEBUG = False
 
