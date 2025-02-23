@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/RedditPosts.css';
 
-const RedditPosts = ({ cryptoToken }) => {
+const RedditPosts = ({ cryptoName }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    if (cryptoToken) {
-      axios.get(`http://localhost:8000/api/reddit/?query=${cryptoToken}`)
+    if (cryptoName) {
+      axios.get(`http://localhost:8000/api/reddit/?query=${cryptoName}`)
         .then(res => {
           setPosts(res.data.posts);
+          window.dispatchEvent(new Event('redditLoaded'));
         })
         .catch(err => {
           console.log(err);
         });
     }
-  }, [cryptoToken]);
+  }, [cryptoName]);
 
 return (
     <div className="reddit-posts-container-internal">

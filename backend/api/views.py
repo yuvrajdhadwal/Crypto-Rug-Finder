@@ -1,4 +1,5 @@
 # backend/api/views.py
+import json
 import os
 import praw
 import random
@@ -15,7 +16,10 @@ from .services.reddit import fetch_subreddit_posts
 from .services.sentiment import sentiment_desc
 from .services.bot_detection import compute_bot_activity
 from .models import RedditComment, RedditPost, CryptoTokenSentiment, CryptoTokenSpam
-
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from .services.rugpull_predictor import predict_rugpull
+from django.views.decorators.csrf import csrf_exempt
 load_dotenv()
 
 reddit = praw.Reddit(
@@ -263,3 +267,29 @@ def bot_activity_view(request):
         },
         status=status.HTTP_200_OK
     )
+
+#############################################################################################
+# ETH RUG PULL MODEL PREDICT APIs
+#############################################################################################
+@csrf_exempt
+def rugpull_prediction(request):
+    """
+    Django API endpoint to predict rugpull probability for a given Ethereum token.
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            token_address = data.get("token_address")
+
+            if not token_address:
+                return JsonResponse({"error": "Token address is required"}, status=400)
+
+            # Run prediction
+            result = predict_rugpull(token_address)
+
+            return JsonResponse(result, status=200)
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
