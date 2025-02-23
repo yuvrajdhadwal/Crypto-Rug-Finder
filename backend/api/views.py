@@ -16,14 +16,10 @@ from .services.reddit import fetch_subreddit_posts
 from .services.sentiment import sentiment_desc
 from .services.bot_detection import compute_bot_activity
 from .models import RedditComment, RedditPost, CryptoTokenSentiment, CryptoTokenSpam
-<<<<<<< Updated upstream
-
-=======
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .services.rugpull_predictor import predict_rugpull
 from django.views.decorators.csrf import csrf_exempt
->>>>>>> Stashed changes
 load_dotenv()
 
 reddit = praw.Reddit(
@@ -270,9 +266,6 @@ def bot_activity_view(request):
             'Comment Spam': bot_activity.comment_spam
         },
         status=status.HTTP_200_OK
-<<<<<<< Updated upstream
-    )
-=======
     )
 
 #############################################################################################
@@ -300,4 +293,3 @@ def rugpull_prediction(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=405)
->>>>>>> Stashed changes
