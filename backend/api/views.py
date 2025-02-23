@@ -88,7 +88,7 @@ def get_reddit_posts(request):
     API endpoint to fetch Reddit posts with concurrent subreddit fetching.
     """
     query = request.GET.get("query", None)
-    limit = int(request.GET.get("limit", 25))
+    limit = int(request.GET.get("limit", 15))
     max_comments = int(request.GET.get("max_comments", 5))
 
     if not query:

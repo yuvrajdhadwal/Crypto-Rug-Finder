@@ -27,7 +27,7 @@ def extract_features(texts):
         sentiment = analyzer.polarity_scores(text)["compound"]
         text_length = len(text)
         num_links = len(re.findall(r'http[s]?://', text))  # Count URLs
-        spam_word_count = sum(1 for word in text.lower().split() if word in SPAM_KEYWORDS) / len(text.split())
+        spam_word_count = sum(1 for word in text.lower().split() if word in SPAM_KEYWORDS) / max(1, len(text.split()))
 
         # Combine all features
         features = [
