@@ -2,7 +2,7 @@ import numpy as np
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from ..models import CryptoTokenSpam
 
@@ -17,7 +17,7 @@ SPAM_KEYWORDS = {
 
 def extract_features(texts):
     analyzer = SentimentIntensityAnalyzer()
-    vectorizer = TfidfVectorizer(max_features=500, stop_words="english")
+    vectorizer = TfidfVectorizer(max_features=50, stop_words="english")
 
     # compute tf-idf matrix
     tfidf_matrix = vectorizer.fit_transform(texts).toarray()
@@ -27,11 +27,11 @@ def extract_features(texts):
         sentiment = analyzer.polarity_scores(text)["compound"]
         text_length = len(text)
         num_links = len(re.findall(r'http[s]?://', text))  # Count URLs
-        spam_word_count = sum(1 for word in text.lower().split() if word in SPAM_KEYWORDS)
+        # spam_word_count = sum(1 for word in text.lower().split() if word in SPAM_KEYWORDS)
 
         # Combine all features
         features = [
-            text_length, sentiment, num_links, spam_word_count,
+            text_length, sentiment, num_links, #spam_word_count,
         ] + list(tfidf_matrix[i])
 
         data.append(features)
@@ -39,7 +39,7 @@ def extract_features(texts):
     return np.array(data)
 
 
-def detect_spam(texts, n_clusters=2):
+def detect_spam(texts, eps=1.2, min_samples=5):
     """Using k-means clustering to catch potential bot/spam activity"""
     
     features = extract_features(texts)
@@ -47,15 +47,12 @@ def detect_spam(texts, n_clusters=2):
     scaler = StandardScaler()
     features_scaled = scaler.fit_transform(features)
 
-    kmeans = KMeans(n_clusters=n_clusters, random_state=8152005, n_init=10)
-    clusters = kmeans.fit_predict(features_scaled)
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    labels = dbscan.fit_predict(features_scaled)
 
-    cluster_means = features_scaled.mean(axis=0)
-    spam_cluster = np.argmax(cluster_means[4])  # Spam keywords as key identifier
+    output = [label == -1 for label in labels] # -1 indicates "outliers" (spam)
 
-    spam_labels = [clusters[i] == spam_cluster for i in range(len(texts))]
-
-    return spam_labels
+    return output  
 
 def compute_bot_activity(posts, comments):
     """Computes percentage of posts and comments are potentially bots/spam"""
@@ -67,10 +64,10 @@ def compute_bot_activity(posts, comments):
     comment_spam_labels = detect_spam(comments_text)
 
     post_spam_percentage = (sum(post_spam_labels) / len(posts)) * 100 if posts else 0
-    comment_spam_percentage = (sum(comment_spam_labels) / len(posts)) * 100 if comments else 0
+    comment_spam_percentage = (sum(comment_spam_labels) / len(comments)) * 100 if comments else 0
 
     CryptoTokenSpam.objects.create(
-        crypto_token=posts[0].cryto_token,
+        crypto_token=posts[0].crypto_token,
         post_spam=post_spam_percentage,
         comment_spam=comment_spam_percentage
     )

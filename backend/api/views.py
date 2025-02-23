@@ -150,9 +150,10 @@ def get_sentiment(request):
         return Response({'Error': "Query Parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
     
     try:
-        sentiment =  CryptoTokenSentiment.objects.get(token_address=token)
+        sentiment =  CryptoTokenSentiment.objects.get(crypto_token=token)
     except CryptoTokenSentiment.DoesNotExist:
-        sentiment = create_sentiment(token)
+        create_sentiment(token)
+        sentiment = CryptoTokenSentiment.objects.get(crypto_token=token)
         if not sentiment:
             return Response({'Error': "No sentiment data available."}, status=status.HTTP_404_NOT_FOUND)
     
@@ -234,7 +235,7 @@ def bot_activity_view(request):
     
     bot_activity = CryptoTokenSpam.objects.filter(crypto_token=token).order_by("-created_at").first()
 
-    if not bot_activity.exists(): 
+    if not bot_activity: 
         posts = RedditPost.objects.filter(crypto_token=token)
         comments = RedditComment.objects.filter(post__in=posts)
 
