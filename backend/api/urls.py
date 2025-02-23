@@ -5,7 +5,7 @@ from .views import get_sentiment, honeypot_view, bot_activity_view, rugpull_pred
 urlpatterns = [
     path("reddit/", get_reddit_posts, name="get_reddit_posts"),
     path("reddit_stored/", get_stored_reddit_posts, name="get_stored_reddit_posts"),
-    path('market-data/', market_data_view, name='market-data'),
+    path("market-data/", market_data_view, name="market-data"),
     path('token-price/', on_chain_info, name='token-price'),
     path('get_sentiment/', get_sentiment, name="get_sentiment"),
     path('honeypot/', honeypot_view, name='honeypot_view'),
