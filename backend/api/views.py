@@ -40,16 +40,14 @@ def on_chain_info(request):
     Example usage:
       GET /api/on_chain_info/?token=SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt&chain=mainnet
 
-    'token' -> the Solana token address
-    'chain' -> 'mainnet' or 'devnet'
+    'token' -> the ETH token address
     """
     # 1) Look for "token" in the query params, not the actual address key.
-    network = request.GET.get("network", "mainnet")  # default to 'mainnet'
-    token_address = request.GET.get("address", "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt")
+    token_address = request.GET.get("address", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
 
 
     # 2) Pass (network, token_address) in that order to your function
-    data = get_on_chain_info(network, token_address)
+    data = get_on_chain_info(token_address)
     return Response(data)
 
 
