@@ -5,7 +5,7 @@ def fetch_subreddit_posts(subreddit_name, reddit_query, limit, max_comments, que
     results = []
     subreddit = reddit.subreddit(subreddit_name)
 
-    for post in subreddit.search(query=reddit_query, limit=limit):
+    for post in subreddit.search(query=reddit_query, syntax="lucene", limit=limit):
         post_author = post.author.name if post.author else "Unknown"
 
         # Check if the post is already stored
