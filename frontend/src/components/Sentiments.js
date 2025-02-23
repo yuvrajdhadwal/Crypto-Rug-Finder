@@ -30,7 +30,7 @@ return (
                 
                 {!sentiments.overall.includes('Unbiased') && 
                 <li className="sentiment">
-                    <div className="sentiment-header">
+                    <div>
                         <p className="sentiment-title">
                             🚩 {sentiments.overall}
                         </p>
@@ -42,7 +42,7 @@ return (
 
                 {!sentiments.comment.includes('Unbiased') && 
                     <li className="sentiment">
-                    <div className="sentiment-header">
+                    <div>
                         <p className="sentiment-title">
                             🚩 {sentiments.comment}
                         </p>
@@ -54,7 +54,7 @@ return (
 
                 {!sentiments.text.includes('Unbiased') && 
                     <li className="sentiment">
-                    <div className="sentiment-header">
+                    <div>
                         <p className="sentiment-title">
                             🚩 {sentiments.text}
                         </p>
@@ -66,7 +66,7 @@ return (
 
                 {!sentiments.title.includes('Unbiased') && 
                     <li className="sentiment">
-                    <div className="sentiment-header">
+                    <div>
                         <p className="sentiment-title">
                             🚩 {sentiments.title}
                         </p>

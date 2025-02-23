@@ -5,6 +5,7 @@ import RedditPosts from './components/RedditPosts';
 import Sentiments from './components/Sentiments';
 import BotCheck from './components/BotCheck';
 import CryptoInfo from './components/CryptoInfo';
+import Notes from './components/Notes';
 
 class App extends React.Component {
   constructor(props) {
@@ -40,22 +41,25 @@ class App extends React.Component {
     const { cryptoName, cryptoToken, redditLoaded } = this.state;
     return (
       <div>
-        <Header />
-        <CryptoNameInput />
-        {cryptoName && (
-          <div className="reddit-and-sentiments-container">
-            <RedditPosts cryptoName={cryptoName} />
-            {redditLoaded && (
-              <span>
-                <span>
-                  <Sentiments cryptoName={cryptoName} />
-                  <BotCheck cryptoName={cryptoName} />
-                </span>
-            </span>
-            )}
-            <CryptoInfo cryptoToken={cryptoToken} />
-          </div>
+      <Header />
+      <CryptoNameInput />
+      {cryptoName ? (
+        <div className="reddit-and-sentiments-container">
+        <RedditPosts cryptoName={cryptoName} />
+        {redditLoaded ? (
+          <span>
+          <Sentiments cryptoName={cryptoName} />
+          <Notes cryptoToken={cryptoToken} />
+          <BotCheck cryptoName={cryptoName} />
+          </span>
+        ) : (
+          <p>Loading...</p>
         )}
+        <CryptoInfo cryptoToken={cryptoToken} />
+        </div>
+      ) : (
+        <p>Please select a cryptocurrency.</p>
+      )}
       </div>
     );
   }

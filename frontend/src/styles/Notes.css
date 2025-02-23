@@ -1,8 +1,8 @@
-.sentiments-container-internal {
-  width: 15%;
+.notes-container-internal {
+  width: 10%;
   display: inline-block;
   vertical-align: top;
-  margin: 0% 2% 0% 2%;
+  margin: 0% 5% 0% 5%;
 }
 
 h2 {
@@ -14,21 +14,21 @@ h2 {
   padding-bottom: 5px;
 }
 
-.sentiments-list {
+.notes-list {
   list-style-type: none;
   display: inline-block;
   vertical-align: top;
 }
 
-.sentiment {
+.note {
   border: 1px solid #ccc; 
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  background-color: #ffd6d6;
+  background-color: green;
 }
 
-.sentiment-title {
+.note-title {
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
@@ -36,7 +36,7 @@ h2 {
   text-decoration: none;
 }
 
-.sentiment-details {
+.note-details {
   font-size: 0.8em;
   color: #777;
   margin-top: 5px;

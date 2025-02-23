@@ -16,15 +16,29 @@ const CryptoInfo = ({ cryptoToken }) => {
 
   useEffect(() => {
     if (cryptoToken) {
+
+        // Price, Liquidity
       axios.get(`http://localhost:8000/api/token-price/?address=${cryptoToken}`)
         .then(res => {
             setPrice(res.data.pairs[0].usd_price);
             setLiquidity(res.data.pairs[0].liquidity_usd);
-            // setMarketCap({marketCap: res.data[0].marketCapUsd});
         })
         .catch(err => {
             console.log(err);
         });
+
+        // Market Cap
+        axios.get(`http://localhost:8000/api/market-data/?address=${cryptoToken}`)
+            .then(res => {
+                if (res.data['market_cap']) {
+                    setMarketCap(res.data['market_cap']);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+
     }
   }, [cryptoToken, price, liquidity, marketCap]);
 
@@ -42,7 +56,7 @@ return (
                 </div>
                 <div className="CryptoInfo-box">
                     <p>Market Cap</p>
-                    {/* <h3>{marketCap}</h3> */}
+                    <h3>{formatUSD(marketCap)}</h3>
                 </div>
             </>
         ) : (
