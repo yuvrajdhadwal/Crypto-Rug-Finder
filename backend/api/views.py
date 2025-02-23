@@ -14,6 +14,9 @@ from .services.reddit import fetch_subreddit_posts
 from .services.sentiment import sentiment_desc
 from .services.bot_detection import compute_bot_activity
 from .models import RedditComment, RedditPost, CryptoTokenSentiment, CryptoTokenSpam
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+from .services.rugpull_predictor import predict_rugpull
 
 load_dotenv()
 
@@ -261,3 +264,39 @@ def bot_activity_view(request):
         },
         status=status.HTTP_200_OK
     )
+
+#############################################################################################
+# ETH RUG PULL MODEL PREDICT APIs
+#############################################################################################
+@api_view(['POST'])
+def rugpull_prediction(request):
+    """
+    API Endpoint to Predict Rugpull Probability.
+    Example Request:
+    {
+      "decimals": 6,
+      "liquidity": 62215.15,
+      "v24hChangePercent": -49.17,
+      "v24hUSD": 18220.72,
+      "Volatility": 76.06,
+      "holders_count": 0
+    }
+    """
+    try:
+        data = request.data
+        required_fields = ["decimals", "liquidity", "v24hChangePercent", "v24hUSD", "Volatility", "holders_count"]
+        
+        # Validate input
+        if not all(field in data for field in required_fields):
+            return JsonResponse({"error": "Missing required fields"}, status=400)
+
+        # Extract features
+        features = [data[field] for field in required_fields]
+
+        # Predict rugpull risk
+        result = predict_rugpull(features)
+
+        return JsonResponse({"rugpull_prediction": result})
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
