@@ -5,6 +5,7 @@ import RedditPosts from './components/RedditPosts';
 import Sentiments from './components/Sentiments';
 import BotCheck from './components/BotCheck';
 import CryptoInfo from './components/CryptoInfo';
+import Notes from './components/Notes';
 
 class App extends React.Component {
   constructor(props) {
@@ -18,44 +19,47 @@ class App extends React.Component {
 
   componentDidMount() {
     window.addEventListener('cryptoNameSelected', this.handleCryptoNameSelected);
-    window.addEventListener('redditLoaded', this.hanldeRedditLoaded);
+    window.addEventListener('redditLoaded', this.handleRedditLoaded);
   }
 
   componentWillUnmount() {
     window.removeEventListener('cryptoNameSelected', this.handleCryptoNameSelected);
-    window.removeEventListener('redditLoaded', this.hanldeRedditLoaded);
+    window.removeEventListener('redditLoaded', this.handleRedditLoaded);
   }
 
   handleCryptoNameSelected = (event) => {
-    const { cryptoName, buttonNumber } = event.detail;
-    this.setState({ cryptoName, buttonNumber });
+    const { cryptoName, cryptoToken } = event.detail;
+    this.setState({ cryptoName, cryptoToken });
     this.setState({ redditLoaded: false });
   };
 
-  hanldeRedditLoaded = () => {
+  handleRedditLoaded = () => {
     this.setState({ redditLoaded: true });
   }
 
   render() {
-    const { cryptoName, cryptoToken, buttonNumber, redditLoaded } = this.state;
+    const { cryptoName, cryptoToken, redditLoaded } = this.state;
     return (
       <div>
-        <Header />
-        <CryptoNameInput />
-        {cryptoName && (
-          <div className="reddit-and-sentiments-container">
-            <RedditPosts cryptoName={cryptoName} />
-            {redditLoaded && (
-              <span>
-                <span>
-                  <Sentiments cryptoName={cryptoName} />
-                  <BotCheck cryptoName={cryptoName} />
-                </span>
-                <CryptoInfo cryptoToken={'0x576e2bed8f7b46d34016198911cdf9886f78bea7'} />
-              </span>
-            )}
-          </div>
+      <Header />
+      <CryptoNameInput />
+      {cryptoName ? (
+        <div className="reddit-and-sentiments-container">
+        <RedditPosts cryptoName={cryptoName} />
+        {redditLoaded ? (
+          <span>
+          <Sentiments cryptoName={cryptoName} />
+          <Notes cryptoToken={cryptoToken} />
+          <BotCheck cryptoName={cryptoName} />
+          </span>
+        ) : (
+          <p>Loading...</p>
         )}
+        <CryptoInfo cryptoToken={cryptoToken} />
+        </div>
+      ) : (
+        <p>Please select a cryptocurrency.</p>
+      )}
       </div>
     );
   }

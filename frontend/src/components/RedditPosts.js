@@ -11,7 +11,9 @@ const RedditPosts = ({ cryptoName }) => {
       axios.get(`http://localhost:8000/api/reddit/?query=${cryptoName}`)
         .then(res => {
           setPosts(res.data.posts);
-          window.dispatchEvent(new Event('redditLoaded'));
+            setTimeout(() => {
+                window.dispatchEvent(new Event('redditLoaded'));
+            }, 100);
         })
         .catch(err => {
           console.log(err);

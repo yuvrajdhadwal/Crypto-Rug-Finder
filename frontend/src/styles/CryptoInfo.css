@@ -1,0 +1,30 @@
+.CryptoInfo-container-internal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 20px;
+    padding: 20px;
+}
+
+.CryptoInfo-box {
+    background: #eeffcd;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15x;
+    border-radius: 4px;
+    width: calc(33.333% - 40px); /* three boxes per row */
+    box-sizing: border-box;
+}
+
+h3 {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: black;
+    text-align: center;
+}
+
+p {
+    font-size: 1.5em;
+    color: #333;
+    text-align: center;
+}

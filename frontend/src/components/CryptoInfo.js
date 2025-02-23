@@ -3,34 +3,65 @@ import axios from 'axios';
 import '../styles/CryptoInfo.css';
 
 const CryptoInfo = ({ cryptoToken }) => {
-  const [CryptoInfo, setCryptoInfo] = useState({});
+    const [price, setPrice] = useState(0);
+    const [liquidity, setLiquidity] = useState(0);
+    const [marketCap, setMarketCap] = useState(0);
+
+    const formatUSD = (value) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(value);
+    };
 
   useEffect(() => {
     if (cryptoToken) {
-      axios.get(`http://localhost:8000/api/token-price/?token=${cryptoToken}`)
+
+        // Price, Liquidity
+      axios.get(`http://localhost:8000/api/token-price/?address=${cryptoToken}`)
         .then(res => {
-            console.log(res.data);
+            setPrice(res.data.pairs[0].usd_price);
+            setLiquidity(res.data.pairs[0].liquidity_usd);
         })
         .catch(err => {
             console.log(err);
         });
+
+        // Market Cap
+        axios.get(`http://localhost:8000/api/market-data/?address=${cryptoToken}`)
+            .then(res => {
+                if (res.data['market_cap']) {
+                    setMarketCap(res.data['market_cap']);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+
     }
-  }, [cryptoToken]);
+  }, [cryptoToken, price, liquidity, marketCap]);
 
 return (
     <div className="CryptoInfo-container-internal">
-        <div className="CryptoInfo-box">
-            <h3>Price</h3>
-            <p>{CryptoInfo.price}</p>
-        </div>
-        <div className="CryptoInfo-box">
-            <h3>Liquidity</h3>
-            <p>{CryptoInfo.liquidity}</p>
-        </div>
-        <div className="CryptoInfo-box">
-            <h3>Market Cap</h3>
-            <p>{CryptoInfo.marketCap}</p>
-        </div>
+        {price ? (
+            <>
+                <div className="CryptoInfo-box">
+                    <p>Price</p>
+                    <h3>{formatUSD(price)}</h3>
+                </div>
+                <div className="CryptoInfo-box">
+                    <p>Liquidity</p>
+                    <h3>{formatUSD(liquidity)}</h3>
+                </div>
+                <div className="CryptoInfo-box">
+                    <p>Market Cap</p>
+                    <h3>{formatUSD(marketCap)}</h3>
+                </div>
+            </>
+        ) : (
+            <p>Loading...</p>
+        )}
     </div>
 );
 };

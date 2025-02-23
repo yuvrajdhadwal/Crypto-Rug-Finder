@@ -28,7 +28,7 @@
 
 .crypto-token-input input {
     width: 100%;
-    padding: 10px 10px 10px 30px; /* Add padding to the left to make space for the dollar sign */
+    padding: 10px 10px 10px 10px; /* Add padding to the left to make space for the dollar sign */
     border: none;
     font-size: 2em;
     font-weight: bolder;

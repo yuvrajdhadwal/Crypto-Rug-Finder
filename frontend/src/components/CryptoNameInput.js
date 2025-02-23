@@ -4,12 +4,13 @@ import '../styles/CryptoNameInput.css';
 const CryptoNameInput = () => {
   const [highlightedButton, setHighlightedButton] = useState(null);
   const [cryptoName, setcryptoName] = useState('');
+  const [cryptoToken, setcryptoToken] = useState('');
 
   const handleButtonClick = (buttonNumber) => {
-    setHighlightedButton(buttonNumber);
+    // setHighlightedButton(buttonNumber);
 
     // Begin querying
-    const event = new CustomEvent('cryptoNameSelected', { detail: { cryptoName, buttonNumber } });
+    const event = new CustomEvent('cryptoNameSelected', { detail: { cryptoName, cryptoToken } });
     window.dispatchEvent(event);
   };
 
@@ -17,9 +18,9 @@ const CryptoNameInput = () => {
     <div className="crypto-token-input">
       <input
         type="text"
-        id="crypto-token"
-        name="crypto-token"
-        placeholder="Enter a Crypto Token"
+        id="crypto-name"
+        name="crypto-name"
+        placeholder="Enter a Crypto Name"
         maxLength="100"
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
@@ -36,8 +37,24 @@ const CryptoNameInput = () => {
           setHighlightedButton(null);
         }}
       />
+      <input
+        type="text"
+        id="crypto-token"
+        name="crypto-token"
+        placeholder="Enter a Crypto Token"
+        maxLength="100"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            handleButtonClick(null);
+          }
+        }}
+        onInput={(e) => {
+          setcryptoToken(e.target.value);
+          setHighlightedButton(null);
+        }}
+      />
 
-      <div className="toggle-buttons">
+      {/* <div className="toggle-buttons">
         <button
           className={highlightedButton === 1 ? 'highlighted' : ''}
           onClick={() => handleButtonClick(1)}
@@ -50,7 +67,7 @@ const CryptoNameInput = () => {
         >
           Solana (SOL)
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
