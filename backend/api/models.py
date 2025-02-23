@@ -7,7 +7,7 @@ class MarketData(models.Model):
     current_price = models.FloatField()
     total_volume = models.FloatField()
     market_cap = models.FloatField()
-    last_updated = models.DateTimeField(auto_now=True)
+    last_updated = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} ({self.token_id})"
@@ -44,4 +44,11 @@ class CryptoTokenSentiment(models.Model):
     overall_text_sentiment = models.FloatField()
     overall_comment_sentiment = models.FloatField()
     overall_sentiment = models.FloatField()
-    last_updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CryptoTokenSpam(models.Model):
+    crypto_token = models.CharField(max_length=100)
+    post_spam = models.FloatField() # percentage of content that is spam
+    comment_spam = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)

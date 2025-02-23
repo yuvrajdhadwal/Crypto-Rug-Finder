@@ -12,8 +12,8 @@ from .services.honeypot import check_honeypot
 from .services.moralis import get_on_chain_info
 from .services.reddit import fetch_subreddit_posts
 # from .services.sentiment import create_sentiment
-# from .services.bot_detection import compute_bot_activity
-from .models import RedditComment, RedditPost, CryptoTokenSentiment
+from .services.bot_detection import compute_bot_activity
+from .models import RedditComment, RedditPost, CryptoTokenSentiment, CryptoTokenSpam
 
 load_dotenv()
 
@@ -225,15 +225,30 @@ def create_sentiment(token):
 # Bot/Spam Detection APIs
 #############################################################################################
 
-# @api_view(["GET"])
-# def bot_activity_view(request):
-#     token = request.GET.get('query', None)
-#     if not token:
-#         return Response({'Error': "Query parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["GET"])
+def bot_activity_view(request):
+    token = request.GET.get('query', None)
     
-#     posts = RedditPost.objects.filter(crypto_token=token)
-#     comments = RedditComment.objects.filter(post__in=posts)
+    if not token:
+        return Response({'Error': "Query parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    bot_activity = CryptoTokenSpam.objects.filter(crypto_token=token).order_by("-created_at").first()
 
-#     bot_activity = compute_bot_activity(posts, comments)
+    if not bot_activity.exists(): 
+        posts = RedditPost.objects.filter(crypto_token=token)
+        comments = RedditComment.objects.filter(post__in=posts)
 
-#     return Response(bot_activity, status=status.HTTP_200_OK)
+        compute_bot_activity(posts, comments)
+
+        bot_activity = CryptoTokenSpam.objects.filter(crypto_token=token).order_by("-created_at").first()
+
+        if not bot_activity:
+            return Response({'Error': "Failed to compute bot activity."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(
+        {
+            'Post Spam': bot_activity.post_spam,
+            'Comment Spam': bot_activity.comment_spam
+        },
+        status=status.HTTP_200_OK
+    )

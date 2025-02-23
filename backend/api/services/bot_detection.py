@@ -3,6 +3,7 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import StandardScaler
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from ..models import CryptoTokenSpam
 
 # Common SPAM keywords
 SPAM_KEYWORDS = {
@@ -24,3 +25,12 @@ def compute_bot_activity(posts, comments):
 
     post_spam_labels = detect_spam(posts_text)
     comment_spam_labels = detect_spam(comments_text)
+
+    post_spam_percentage = (sum(post_spam_labels) / len(posts)) * 100 if posts else 0
+    comment_spam_percentage = (sum(comment_spam_labels) / len(posts)) * 100 if comments else 0
+
+    CryptoTokenSpam.objects.create(
+        crypto_token=posts[0].cryto_token,
+        post_spam=post_spam_percentage,
+        comment_spam=comment_spam_percentage
+    )
