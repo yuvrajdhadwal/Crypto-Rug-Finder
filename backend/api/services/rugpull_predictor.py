@@ -24,7 +24,7 @@ except AttributeError:
 
 
 # === API URLs ===
-ARBITRUM_SUBGRAPH_URL = "https://gateway-arbitrum.network.thegraph.com/api/48f7042b8531bbba9a96514ad4e8c7e8/subgraphs/id/{GRAPH_API}"
+ARBITRUM_SUBGRAPH_URL = "https://gateway.thegraph.com/api/{GRAPH_API}/subgraphs/id/HUZDsRpEVP2AvzDCyzDHtdc64dyDxx8FQjzsmqSg4H3B"
 ETHPLORER_API_URL = "https://api.ethplorer.io/getTopTokenHolders"
 ETHPLORER_API_KEY = "freekey"
 
