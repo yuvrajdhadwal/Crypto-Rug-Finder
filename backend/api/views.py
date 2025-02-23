@@ -22,11 +22,11 @@ from .services.rugpull_predictor import predict_rugpull
 load_dotenv()
 
 reddit = praw.Reddit(
-    client_id=os.getenv('CLIENT_ID'),
-    client_secret=os.getenv('CLIENT_SECRET'),
-    username=os.getenv('REDDIT_USERNAME'),
-    password=os.getenv('REDDIT_PASSWORD'),
-    user_agent=os.getenv('REDDIT_APP')
+    client_id=os.environ['CLIENT_ID'],
+    client_secret=os.environ['CLIENT_SECRET'],
+    username=os.environ['REDDIT_USERNAME'],
+    password=os.environ['REDDIT_PASSWORD'],
+    user_agent=os.environ['REDDIT_APP']
 )
 
 #############################################################################################
