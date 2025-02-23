@@ -17,6 +17,7 @@ from .services.bot_detection import compute_bot_activity
 from .models import RedditComment, RedditPost, CryptoTokenSentiment, CryptoTokenSpam
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .services.rugpull_predictor import predict_rugpull
 
 load_dotenv()
 
