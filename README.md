@@ -30,8 +30,8 @@ python -c 'import secrets; print(secrets.token_hex())'
 
     import blpapi
 
-def fetch_bloomberg_crypto_news():
-    SERVICE_URI = "//blp/news"
+def fetch_bloomberg_whale_insider_data():
+    SERVICE_URI = "//blp/refdata"
 
     session = blpapi.Session()
     if not session.start():
@@ -39,16 +39,30 @@ def fetch_bloomberg_crypto_news():
         return
     
     if not session.openService(SERVICE_URI):
-        print("Failed to open Bloomberg news service.")
+        print("Failed to open Bloomberg reference data service.")
         return
 
     service = session.getService(SERVICE_URI)
-    request = service.createRequest("NewsRequest")
+    request = service.createRequest("ReferenceDataRequest")
 
-    request.append("query", "Bitcoin OR Crypto OR Scam OR Rugpull")  # Search for scam news
-    request.set("maxResults", 10)  # Get the latest 10 articles
+    request.append("securities", "XBT Curncy")  # Bitcoin ticker on Bloomberg
 
-    print("Requesting latest Bitcoin scam-related news...")
+    # Add relevant fields
+    fields = [
+        "INSIDER_OWNERSHIP",         # % of BTC held by insiders
+        "WHALE_TRADES",              # Large whale transactions
+        "LOCKUP_EXPIRY_DATE",        # When insider tokens unlock
+        "BTC_SUPPLY_HELD_TOP10",     # % of BTC held by top 10 wallets
+        "ACTIVE_ADDRESSES",          # Active Bitcoin wallets
+        "BLOCKCHAIN_TX_VOLUME",      # Total transaction volume on-chain
+        "SUPPLY_CONCENTRATION",      # How centralized Bitcoin supply is
+        "SMART_CONTRACT_AUDIT"       # Whether BTC's smart contracts were audited
+    ]
+
+    for field in fields:
+        request.append("fields", field)
+
+    print("Requesting whale trades, insider ownership, and blockchain activity...")
 
     session.sendRequest(request)
 
@@ -60,7 +74,7 @@ def fetch_bloomberg_crypto_news():
         if event.eventType() == blpapi.Event.RESPONSE:
             break
 
-fetch_bloomberg_crypto_news()
+fetch_bloomberg_whale_insider_data()
 
 
 
