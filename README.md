@@ -30,8 +30,8 @@ python -c 'import secrets; print(secrets.token_hex())'
 
     import blpapi
 
-    def fetch_bloomberg_realtime_data():
-        SERVICE_URI = "//blp/mktdata"
+def fetch_bloomberg_crypto_news():
+    SERVICE_URI = "//blp/news"
 
     session = blpapi.Session()
     if not session.start():
@@ -39,30 +39,16 @@ python -c 'import secrets; print(secrets.token_hex())'
         return
     
     if not session.openService(SERVICE_URI):
-        print("Failed to open Bloomberg market data service.")
+        print("Failed to open Bloomberg news service.")
         return
 
     service = session.getService(SERVICE_URI)
-    request = service.createRequest("MarketDataRequest")
+    request = service.createRequest("NewsRequest")
 
-    request.append("securities", "XBT Curncy")
+    request.append("query", "Bitcoin OR Crypto OR Scam OR Rugpull")  # Search for scam news
+    request.set("maxResults", 10)  # Get the latest 10 articles
 
-    # **Fields for real-time scam detection**
-    fields = [
-        "BID",                 # Highest bid price
-        "ASK",                 # Lowest ask price
-        "BID_ASK_SPREAD",      # Difference between bid and ask (low liquidity risk)
-        "VOLUME",              # Trading volume
-        "VWAP",                # Volume Weighted Average Price (detects price manipulation)
-        "TURNOVER_RATIO",      # Trading turnover (high turnover may indicate pump-and-dump)
-        "OPEN_INTEREST",       # Futures open interest (mass liquidation = scam risk)
-        "IMPLIED_VOLATILITY_30D" # 30-day implied volatility
-    ]
-
-    for field in fields:
-        request.append("fields", field)
-
-    print("Requesting real-time Bitcoin trading data...")
+    print("Requesting latest Bitcoin scam-related news...")
 
     session.sendRequest(request)
 
@@ -74,6 +60,7 @@ python -c 'import secrets; print(secrets.token_hex())'
         if event.eventType() == blpapi.Event.RESPONSE:
             break
 
-fetch_bloomberg_realtime_data()
+fetch_bloomberg_crypto_news()
+
 
 
