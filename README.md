@@ -26,3 +26,10 @@ For deployment to production, create an app setting, `SECRET_KEY`. Use this comm
 ```shell
 python -c 'import secrets; print(secrets.token_hex())'
 ```
+
+
+    fields = [
+        "PX_LAST", "VOLUME", "BID_ASK_SPREAD", "OPEN_INTEREST",
+        "INSIDER_OWNERSHIP", "BTC_SUPPLY_HELD_TOP10", "BLOCKCHAIN_TX_VOLUME",
+        "NEWS_SENTIMENT_SCORE", "NEWS_VOLUME", "LISTING_EXCHANGES"
+    ]
