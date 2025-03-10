@@ -28,11 +28,10 @@ python -c 'import secrets; print(secrets.token_hex())'
 ```
 
 
-import blpapi
-from datetime import datetime, timedelta
+    import blpapi
 
-def fetch_bloomberg_bitcoin_historical():
-    SERVICE_URI = "//blp/refdata"
+    def fetch_bloomberg_realtime_data():
+        SERVICE_URI = "//blp/mktdata"
 
     session = blpapi.Session()
     if not session.start():
@@ -40,37 +39,33 @@ def fetch_bloomberg_bitcoin_historical():
         return
     
     if not session.openService(SERVICE_URI):
-        print("Failed to open Bloomberg service.")
+        print("Failed to open Bloomberg market data service.")
         return
 
     service = session.getService(SERVICE_URI)
-    request = service.createRequest("HistoricalDataRequest")
+    request = service.createRequest("MarketDataRequest")
 
-    request.append("securities", "XBT Curncy")  # Bitcoin Bloomberg Ticker
+    request.append("securities", "XBT Curncy")
 
-    # **Use only fields applicable to historical data**
+    # **Fields for real-time scam detection**
     fields = [
-        "PX_LAST",          # Last Price
-        "VOLUME",           # Trading Volume
-        "MOV_AVG_50D",      # 50-Day Moving Average
-        "MOV_AVG_200D",     # 200-Day Moving Average
-        "RETURNS_YTD",      # Year-to-date returns
-        "IMPLIED_VOLATILITY_30D"  # Implied volatility (detects price manipulation)
+        "BID",                 # Highest bid price
+        "ASK",                 # Lowest ask price
+        "BID_ASK_SPREAD",      # Difference between bid and ask (low liquidity risk)
+        "VOLUME",              # Trading volume
+        "VWAP",                # Volume Weighted Average Price (detects price manipulation)
+        "TURNOVER_RATIO",      # Trading turnover (high turnover may indicate pump-and-dump)
+        "OPEN_INTEREST",       # Futures open interest (mass liquidation = scam risk)
+        "IMPLIED_VOLATILITY_30D" # 30-day implied volatility
     ]
 
     for field in fields:
         request.append("fields", field)
 
-    start_date = (datetime.now() - timedelta(days=365)).strftime("%Y%m%d")
-    end_date = datetime.now().strftime("%Y%m%d")
-    request.set("startDate", start_date)
-    request.set("endDate", end_date)
-    request.set("periodicitySelection", "DAILY")
-
-    print(f"Requesting historical Bitcoin data from {start_date} to {end_date}...")
+    print("Requesting real-time Bitcoin trading data...")
 
     session.sendRequest(request)
-    
+
     while True:
         event = session.nextEvent()
         for msg in event:
@@ -79,5 +74,6 @@ def fetch_bloomberg_bitcoin_historical():
         if event.eventType() == blpapi.Event.RESPONSE:
             break
 
-    fetch_bloomberg_bitcoin_historical()
+fetch_bloomberg_realtime_data()
+
 
