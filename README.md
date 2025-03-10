@@ -1,28 +1,6 @@
-# Deploy a Python (Django) web app to Azure App Service - Sample Application
+# Crypto Rug Finder
+The following is the source code for the website: 
 
-This is the sample Django application for the Azure Quickstart [Deploy a Python (Django or Flask) web app to Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python).  For instructions on how to create the Azure resources and deploy the application to Azure, refer to the Quickstart article.
+Given a Cryptocurrency Token, the website gathers data from Bloomberg, Reddit, and Twitter and utilizes an XGBoost, ensemble decision tree predictive model, to predict if a token is a rugpool or scam. Utilizing sentiment analysis we can also calculate whether the token is currently overhyped or recently rugpooled. utilizing an isolation forest algoithm, we also detect if there is a lot of bot activity surrounding online discourse of the token.
 
-Sample applications are available for the other frameworks here:
-
-* Flask [https://github.com/Azure-Samples/msdocs-python-flask-webapp-quickstart](https://github.com/Azure-Samples/msdocs-python-flask-webapp-quickstart)
-* FastAPI [https://github.com/Azure-Samples/msdocs-python-fastapi-webapp-quickstart](https://github.com/Azure-Samples/msdocs-python-fastapi-webapp-quickstart)
-
-If you need an Azure account, you can [create one for free](https://azure.microsoft.com/en-us/free/).
-
-## For local development
-
-Fill in a secret value in the `.env` file.
-
-For local development, use this random string as an appropriate value:
-
-```shell
-SECRET_KEY=123abc
-```
-
-## When you deploy to Azure
-
-For deployment to production, create an app setting, `SECRET_KEY`. Use this command to generate an appropriate value:
-
-```shell
-python -c 'import secrets; print(secrets.token_hex())'
-```
+This project is born from the Feb 2025 Hackylictics Hackathon with participants Yuvraj Dhadwal, Anshul Chelapurath, and Lucian Tash and then later developed further by Yuvraj Dhadwal.
