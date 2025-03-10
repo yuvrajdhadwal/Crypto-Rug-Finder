@@ -28,8 +28,56 @@ python -c 'import secrets; print(secrets.token_hex())'
 ```
 
 
+import blpapi
+from datetime import datetime, timedelta
+
+def fetch_bloomberg_bitcoin_historical():
+    SERVICE_URI = "//blp/refdata"
+
+    session = blpapi.Session()
+    if not session.start():
+        print("Failed to start session.")
+        return
+    
+    if not session.openService(SERVICE_URI):
+        print("Failed to open Bloomberg service.")
+        return
+
+    service = session.getService(SERVICE_URI)
+    request = service.createRequest("HistoricalDataRequest")
+
+    request.append("securities", "XBT Curncy")  # Bitcoin Bloomberg Ticker
+
+    # **Use only fields applicable to historical data**
     fields = [
-        "PX_LAST", "VOLUME", "BID_ASK_SPREAD", "OPEN_INTEREST",
-        "INSIDER_OWNERSHIP", "BTC_SUPPLY_HELD_TOP10", "BLOCKCHAIN_TX_VOLUME",
-        "NEWS_SENTIMENT_SCORE", "NEWS_VOLUME", "LISTING_EXCHANGES"
+        "PX_LAST",          # Last Price
+        "VOLUME",           # Trading Volume
+        "MOV_AVG_50D",      # 50-Day Moving Average
+        "MOV_AVG_200D",     # 200-Day Moving Average
+        "RETURNS_YTD",      # Year-to-date returns
+        "IMPLIED_VOLATILITY_30D"  # Implied volatility (detects price manipulation)
     ]
+
+    for field in fields:
+        request.append("fields", field)
+
+    start_date = (datetime.now() - timedelta(days=365)).strftime("%Y%m%d")
+    end_date = datetime.now().strftime("%Y%m%d")
+    request.set("startDate", start_date)
+    request.set("endDate", end_date)
+    request.set("periodicitySelection", "DAILY")
+
+    print(f"Requesting historical Bitcoin data from {start_date} to {end_date}...")
+
+    session.sendRequest(request)
+    
+    while True:
+        event = session.nextEvent()
+        for msg in event:
+            print(msg)
+
+        if event.eventType() == blpapi.Event.RESPONSE:
+            break
+
+    fetch_bloomberg_bitcoin_historical()
+
