@@ -1,15 +1,17 @@
 from dotenv import load_dotenv
+import subprocess
 import os
 import json
 
 load_dotenv()
 print("Username:", os.getenv("TRUTHSOCIAL_USERNAME"))  # Debugging
 
-
-import subprocess
-
-command = ["truthbrush", "search", "--searchtype", "statuses", "Trump Coin"]
+command = ["truthbrush", "search", "--searchtype", "statuses", "Elon Musk"]
 result = subprocess.run(command, capture_output=True, text=True)
 
-data = json.loads(result.stdout)
-print(len(data))
+if result.stdout:
+    data = json.loads(result.stdout)
+    for truth in data:
+        print(truth['content'])
+else:
+    print(result.stderr)
