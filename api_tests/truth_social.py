@@ -8,29 +8,27 @@ load_dotenv()
 print("Username:", os.getenv("TRUTHSOCIAL_USERNAME"))  # Debugging
 
 def run_command_with_retries(command, max_retries=5, initial_delay=5):
+    """
+    Attempting to request Truth Social tweets, however, if we get flagged for bots
+    we will call them again after a wait to keep trying
+    """
     attempt = 1
     delay = initial_delay
     while attempt <= max_retries:
         print(f"\nAttempt {attempt}...")
         result = subprocess.run(command, capture_output=True, text=True, env=os.environ)
         
-        # Check if we received output
         if result.stdout:
             try:
                 data = json.loads(result.stdout)
-                return data  # Success, return the parsed JSON
+                return data
             except json.JSONDecodeError as e:
-                # Check if the output appears to be Cloudflare's HTML block
-                if "<!DOCTYPE html>" in result.stdout:
-                    print("Cloudflare block detected. Waiting and retrying...")
-                else:
-                    print("JSON decode error. Waiting and retrying...", e)
+                print("JSON decode error. Waiting and retrying...", e)
         else:
-            print("No stdout received. STDERR:", result.stderr)
+            print("Cloudflare block detected. Waiting and retrying...")
         
-        # Wait and then try again
         time.sleep(delay)
-        delay *= 2  # Exponential backoff
+        delay *= 2
         attempt += 1
 
     return None
