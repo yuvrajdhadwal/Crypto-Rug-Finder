@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/Notes.css';
-import config from '../config';
+// import config from '../config';
+
+const api = process.env.REACT_APP_API_BASE_URL;
 
 const Notes = ({ cryptoToken }) => {
   const [honeypot, setHoneypot] = useState(false);
@@ -13,7 +15,7 @@ const Notes = ({ cryptoToken }) => {
       setHasQueried(false);
 
         // Honeypot
-      axios.get(`${config.baseURL}/api/honeypot/?token=${cryptoToken}&chain=eth`)
+      axios.get(`${api}/api/honeypot/?token=${cryptoToken}&chain=eth`)
         .then(res => {
             setHoneypot(res.data.honeypotResult.isHoneypot);
         })
@@ -22,7 +24,7 @@ const Notes = ({ cryptoToken }) => {
         });
 
         // Rugpull prediction
-        axios.post(`${config.baseURL}/api/predict-rugpull/`, {
+        axios.post(`${api}/api/predict-rugpull/`, {
             token_address: cryptoToken
         }, {
             headers: {

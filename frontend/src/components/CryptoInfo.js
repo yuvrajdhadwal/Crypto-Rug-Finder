@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../styles/CryptoInfo.css';
-import config from '../config';
+// import config from '../config';
+
+const api = process.env.REACT_APP_API_BASE_URL;
 
 const CryptoInfo = ({ cryptoToken }) => {
     const [price, setPrice] = useState(0);
@@ -23,7 +25,7 @@ const CryptoInfo = ({ cryptoToken }) => {
     if (cryptoToken) {
 
         // Price, Liquidity
-      axios.get(`${config.baseURL}/api/token-price/?address=${cryptoToken}`)
+      axios.get(`${api}/api/token-price/?address=${cryptoToken}`)
         .then(res => {
             setPrice(res.data.pairs[0].usd_price);
             setLiquidity(res.data.pairs[0].liquidity_usd);
@@ -33,7 +35,7 @@ const CryptoInfo = ({ cryptoToken }) => {
         });
 
         // Market Cap
-        axios.get(`${config.baseURL}/api/market-data/?address=${cryptoToken}`)
+        axios.get(`${api}/api/market-data/?address=${cryptoToken}`)
             .then(res => {
                 if (res.data['market_cap']) {
                     setMarketCap(res.data['market_cap']);
